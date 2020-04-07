@@ -1,0 +1,26 @@
+version: '2'
+services:
+  bokeh:
+    build:
+      context: ./bokeh
+      dockerfile: Dockerfile
+    environment:
+      ENV: development
+    volumes:
+      - ./bokeh/src:/usr/src/app/
+    ports:
+      - "5006:5006"
+    entrypoint: ["bokeh", "serve", "/usr/src/app/examples/app/sliders.py", "--allow-websocket-origin", "*"]
+  flask:
+    build:
+      context: ./flask
+      dockerfile: Dockerfile
+    environment:
+      ENV: development
+    volumes:
+      - ./flask/src:/usr/src/app/
+    ports:
+      - "80:5000"
+    entrypoint: ["python", "/usr/src/app/app.py"]
+    depends_on:
+      - bokeh
